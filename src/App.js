@@ -1,28 +1,38 @@
 import './App.css';
-import {useEffect,useState} from "react"
+import React, { useState, useEffect } from 'react';
+
 
 function App() {
-  const [joke,setJoke]=useState("")
-  const url="https://api.chucknorris.io/jokes/random"
+  const [character, setcharacter] = useState([]);
+  useEffect(() => {
+    (async()=>{
+      const request=(await fetch("https://rickandmortyapi.com/api/character")
+        .then(res=>res.json()))
 
-const next=()=>{
-  const request=fetch(url)
-  request
-    .then(res=>res.json())
-    .then(res=>setJoke(res.value))
-    .catch(()=>console.log("error"))
-}
+        setcharacter(request.results)
+      })()
+  
+    }, []);
+    
+    return (
+      <>
+        <div className="card-container">
+          {character.map(el=>{
+            return(
+              <div key={el.id} className="card">
+                <div className="title">
+                  <h1>{el.name}</h1>
+                </div>
 
-  useEffect(()=>{
-   next()
-  },[])
-
-  return (
-    <>
-    <h1>{joke}</h1>
-    <button onClick={next}>next joke</button>
-    </>
+                <h3>{el.status}</h3>
+                <img src={el.image} alt="" />
+              </div>
+            )}
+          )}  
+      </div>
+      </>
   );
 }
 
 export default App;
+
